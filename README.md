@@ -48,6 +48,55 @@ Major platforms like Spotify, YouTube, and TikTok usually combine two methods: c
 
 This separation matters because the scoring rule evaluates one candidate, while the ranking rule decides which candidates win when compared across the full catalog.
 
+### Finalized user profile (simulation target)
+
+For this phase, the taste profile I will optimize for is:
+
+- `favorite_genre`: `pop`
+- `favorite_mood`: `happy`
+- `target_energy`: `0.80`
+- `likes_acoustic`: `False`
+
+This profile is broad enough to separate high-energy pop from chill lofi because it combines **categorical** preferences (genre and mood) with **numeric** closeness (energy and acousticness).
+
+### Finalized scoring + ranking plan
+
+For each song, assign points using a weighted scoring rule:
+
+- `+2.0` for exact genre match
+- `+1.0` for exact mood match
+- `+1.5 × energy_closeness`, where
+  $$
+  	ext{energy\_closeness} = 1 - |\text{song energy} - \text{target energy}|
+  $$
+- `+0.5 × acoustic_fit` if `likes_acoustic` is set, where
+  $$
+  	ext{acoustic\_fit} = 1 - |\text{song acousticness} - \text{acoustic target}|
+  $$
+
+Then apply the ranking rule:
+
+1. Score every song in the CSV.
+2. Sort by score in descending order.
+3. Return top $k$ songs with short explanations of matched features.
+
+### Data-flow map
+
+```mermaid
+flowchart LR
+    A[Input: User Preferences] --> B[Load songs.csv catalog]
+    B --> C[Loop through each song]
+    A --> C
+    C --> D[Compute weighted score per song]
+    D --> E[Store song + score + reasons]
+    E --> F[Sort all songs by score]
+    F --> G[Output: Top K recommendations]
+```
+
+### Potential bias to watch for
+
+This system may over-prioritize genre and repeatedly recommend similar tracks, which can reduce discovery and create a small filter bubble. Songs from underrepresented genres or moods may be unfairly ranked lower even when they could still fit the listener's vibe.
+
 ---
 
 ## Getting Started
