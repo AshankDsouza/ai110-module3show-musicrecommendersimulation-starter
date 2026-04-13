@@ -12,29 +12,75 @@ You will implement the functions in recommender.py:
 from .recommender import load_songs, recommend_songs
 
 
-def main() -> None:
-    songs = load_songs("data/songs.csv")
-    print(f"Loaded songs: {len(songs)}")
-
-    # Phase 2 example profile (taste profile)
-    user_prefs = {
-        "genre": "pop",
-        "mood": "happy",
-        "energy": 0.8,
-        "likes_acoustic": False,
-    }
-
-    recommendations = recommend_songs(user_prefs, songs, k=5)
-
-    print("\n=== Top Recommendations ===\n")
+def run_profile(name: str, user_prefs: dict, songs: list, k: int = 5) -> None:
+    """Print top recommendations for one named profile."""
+    print(f"\n=== Profile: {name} ===")
+    recommendations = recommend_songs(user_prefs, songs, k=k)
     for idx, rec in enumerate(recommendations, start=1):
-        # You decide the structure of each returned item.
-        # A common pattern is: (song, score, explanation)
         song, score, explanation = rec
         print(f"{idx}. {song['title']} — {song['artist']}")
         print(f"   Score: {score:.2f}")
         print(f"   Reasons: {explanation}")
         print()
+
+
+def main() -> None:
+    songs = load_songs("data/songs.csv")
+    print(f"Loaded songs: {len(songs)}")
+
+    profiles = [
+        (
+            "High-Energy Pop",
+            {
+                "genre": "pop",
+                "mood": "happy",
+                "energy": 0.8,
+                "likes_acoustic": False,
+            },
+        ),
+        (
+            "Chill Lofi",
+            {
+                "genre": "lofi",
+                "mood": "chill",
+                "energy": 0.35,
+                "likes_acoustic": True,
+            },
+        ),
+        (
+            "Deep Intense Rock",
+            {
+                "genre": "rock",
+                "mood": "intense",
+                "energy": 0.92,
+                "likes_acoustic": False,
+            },
+        ),
+        (
+            "Adversarial: High-Energy Sad Acoustic",
+            {
+                "genre": "lofi",
+                "mood": "sad",
+                "energy": 0.9,
+                "likes_acoustic": True,
+            },
+        ),
+        (
+            "Experiment: Energy-heavy High-Energy Pop",
+            {
+                "genre": "pop",
+                "mood": "happy",
+                "energy": 0.8,
+                "likes_acoustic": False,
+                # Weight-shift experiment: half genre, double energy
+                "w_genre": 1.0,
+                "w_energy": 3.0,
+            },
+        ),
+    ]
+
+    for name, user_prefs in profiles:
+        run_profile(name, user_prefs, songs, k=5)
 
 
 if __name__ == "__main__":

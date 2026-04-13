@@ -148,6 +148,16 @@ Add your terminal screenshot for `python -m src.main` here:
 
 ![CLI recommendation output](docs/cli-output.png)
 
+### Phase 4 Evaluation Screenshots
+
+Add one screenshot per profile run:
+
+- High-Energy Pop: ![High-Energy Pop output](docs/profile-high-energy-pop.png)
+- Chill Lofi: ![Chill Lofi output](docs/profile-chill-lofi.png)
+- Deep Intense Rock: ![Deep Intense Rock output](docs/profile-deep-intense-rock.png)
+- Adversarial profile: ![Adversarial output](docs/profile-adversarial.png)
+- Weight-shift experiment: ![Weight-shift output](docs/profile-experiment-energy-heavy.png)
+
 ---
 
 ## Limitations and Risks

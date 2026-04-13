@@ -2,110 +2,52 @@
 
 ## 1. Model Name  
 
-Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
+**VibeFinder 1.0**
 
 ---
 
 ## 2. Intended Use  
 
-Describe what your recommender is designed to do and who it is for. 
-
-Prompts:  
-
-- What kind of recommendations does it generate  
-- What assumptions does it make about the user  
-- Is this for real users or classroom exploration  
+This recommender suggests the top 5 songs from a small CSV catalog using a transparent weighted score. It assumes each user can be represented by genre, mood, target energy, and acoustic preference. This is for classroom exploration and debugging recommender logic, not for production use.
 
 ---
 
 ## 3. How the Model Works  
 
-Explain your scoring approach in simple language.  
-
-Prompts:  
-
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
-
-Avoid code here. Pretend you are explaining the idea to a friend who does not program.
+Each song has attributes such as genre, mood, energy, and acousticness. A user profile provides preferred genre, preferred mood, desired energy level, and whether acoustic songs are preferred. The model gives fixed points for genre/mood matches and partial points for numeric closeness (energy and acoustic fit). After scoring every song, it ranks all songs from highest to lowest and returns the top 5 with plain-language reasons.
 
 ---
 
 ## 4. Data  
 
-Describe the dataset the model uses.  
-
-Prompts:  
-
-- How many songs are in the catalog  
-- What genres or moods are represented  
-- Did you add or remove data  
-- Are there parts of musical taste missing in the dataset  
+The catalog contains 18 songs in [data/songs.csv](data/songs.csv). It includes genres such as pop, lofi, rock, jazz, synthwave, indie pop, r&b, electronic, world, classical, hip hop, metal, house, folk, and ambient, with moods like happy, chill, intense, focused, moody, calm, and nostalgic. I expanded the starter catalog with additional rows to improve diversity. The dataset is still small and does not include lyrics, language, cultural context, or listening-session behavior.
 
 ---
 
 ## 5. Strengths  
 
-Where does your system seem to work well  
-
-Prompts:  
-
-- User types for which it gives reasonable results  
-- Any patterns you think your scoring captures correctly  
-- Cases where the recommendations matched your intuition  
+The system works well for clear preference profiles such as “High-Energy Pop,” “Chill Lofi,” and “Deep Intense Rock.” It captures intuitive patterns: high energy profiles receive energetic tracks, and acoustic-friendly profiles move toward more acoustic songs. Because reasons are printed for each recommendation, it is easy to inspect why a result appeared.
 
 ---
 
 ## 6. Limitations and Bias 
 
-Where the system struggles or behaves unfairly. 
-
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+One weakness is that genre matching is a large fixed bonus, which can dominate outcomes and reduce discovery. In the adversarial profile (`genre=lofi`, `mood=sad`, `energy=0.9`), the model still returned multiple lofi songs even though their energy is far from the target, because genre points outweigh contradictory signals. This can create a filter bubble where users keep seeing familiar genre labels instead of better mood/energy fits. Another limitation is sparse mood coverage (for example, “sad” is underrepresented), which pushes the model to rely on whichever signals are available. Finally, the model ignores context features like time of day, recent skips, and novelty, so it may repeat similar songs too often.
 
 ---
 
 ## 7. Evaluation  
 
-How you checked whether the recommender behaved as expected. 
-
-Prompts:  
-
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
-
-No need for numeric metrics unless you created some.
+I tested five scenarios in the CLI: High-Energy Pop, Chill Lofi, Deep Intense Rock, an adversarial conflicting profile, and an energy-heavy weight-shift experiment. I looked for whether top songs matched common-sense vibe expectations and whether reasons aligned with score math. The strongest result was profile alignment: “Library Rain”/“Midnight Coding” rose for Chill Lofi, and “Storm Runner” rose for Deep Intense Rock. The biggest surprise was adversarial behavior: lofi songs still ranked high despite poor energy match because genre had a strong fixed weight. In the weight-shift experiment (half genre, double energy), rankings became more energy-driven and more diverse, with non-pop high-energy songs moving upward.
 
 ---
 
 ## 8. Future Work  
 
-Ideas for how you would improve the model next.  
-
-Prompts:  
-
-- Additional features or preferences  
-- Better ways to explain recommendations  
-- Improving diversity among the top results  
-- Handling more complex user tastes  
+I would add diversity constraints so the top 5 cannot be dominated by one genre or artist. I would also include recency and skip-rate style feedback to simulate collaborative signals. Another improvement is dynamic weight tuning per user rather than one global setting. Finally, I would support multi-objective ranking (match quality + novelty + diversity) for less repetitive results.
 
 ---
 
 ## 9. Personal Reflection  
 
-A few sentences about your experience.  
-
-Prompts:  
-
-- What you learned about recommender systems  
-- Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+I learned that even a simple weighted scorer can feel surprisingly realistic when the data fields are meaningful. I also learned how small weight changes can produce noticeably different recommendation lists. This project made me more aware that real apps are not just “smart”; they are strongly shaped by data coverage and design choices, and those choices can accidentally narrow what users discover.
