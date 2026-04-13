@@ -17,17 +17,36 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Major platforms like Spotify, YouTube, and TikTok usually combine two methods: collaborative filtering (finding patterns from many users' behavior like likes, skips, watch time, saves, and playlist adds) and content-based filtering (matching item attributes like genre, mood, tempo, and energy to a user's taste). Collaborative filtering helps discover songs users did not explicitly ask for, while content-based filtering helps explain why a song fits a known vibe. In this simulation, I prioritize a transparent content-based approach: each song is scored against a user taste profile using weighted matches, then songs are sorted by score and the top-k are recommended.
 
-Some prompts to answer:
+### Features used in this simulation
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+**Song features (`Song`)**
+- `genre`
+- `mood`
+- `energy`
+- `acousticness`
+- (available for future expansion: `tempo_bpm`, `valence`, `danceability`)
 
-You can include a simple diagram or bullet list if helpful.
+**User taste features (`UserProfile`)**
+- `favorite_genre`
+- `favorite_mood`
+- `target_energy`
+- `likes_acoustic`
+
+### Algorithm recipe (concept sketch)
+
+- **Scoring rule (single song):**
+  - Add points for exact `genre` and `mood` matches.
+  - Add a partial score for numeric closeness, e.g. energy closeness
+    $$\text{closeness} = 1 - |\text{song energy} - \text{target energy}|$$
+  - Optionally add acoustic preference fit.
+- **Ranking rule (all songs):**
+  - Compute score for every song.
+  - Sort songs from highest to lowest score.
+  - Return top $k$ songs with short explanations.
+
+This separation matters because the scoring rule evaluates one candidate, while the ranking rule decides which candidates win when compared across the full catalog.
 
 ---
 
