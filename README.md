@@ -142,6 +142,12 @@ Use this section to document the experiments you ran. For example:
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
+### CLI Output Screenshot
+
+Add your terminal screenshot for `python -m src.main` here:
+
+![CLI recommendation output](docs/cli-output.png)
+
 ---
 
 ## Limitations and Risks

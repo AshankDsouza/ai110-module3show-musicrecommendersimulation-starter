@@ -13,7 +13,8 @@ from .recommender import load_songs, recommend_songs
 
 
 def main() -> None:
-    songs = load_songs("data/songs.csv") 
+    songs = load_songs("data/songs.csv")
+    print(f"Loaded songs: {len(songs)}")
 
     # Phase 2 example profile (taste profile)
     user_prefs = {
@@ -25,13 +26,14 @@ def main() -> None:
 
     recommendations = recommend_songs(user_prefs, songs, k=5)
 
-    print("\nTop recommendations:\n")
-    for rec in recommendations:
+    print("\n=== Top Recommendations ===\n")
+    for idx, rec in enumerate(recommendations, start=1):
         # You decide the structure of each returned item.
         # A common pattern is: (song, score, explanation)
         song, score, explanation = rec
-        print(f"{song['title']} - Score: {score:.2f}")
-        print(f"Because: {explanation}")
+        print(f"{idx}. {song['title']} — {song['artist']}")
+        print(f"   Score: {score:.2f}")
+        print(f"   Reasons: {explanation}")
         print()
 
 
