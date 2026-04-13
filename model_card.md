@@ -1,53 +1,79 @@
 # 🎧 Model Card: Music Recommender Simulation
 
-## 1. Model Name  
+## Model Name
 
-**VibeFinder 1.0**
+VibeFinder 1.0
 
----
+## Goal / Task
 
-## 2. Intended Use  
+The system suggests the top 5 songs for a user profile.  
+It predicts which songs are the best fit based on vibe features.
 
-This recommender suggests the top 5 songs from a small CSV catalog using a transparent weighted score. It assumes each user can be represented by genre, mood, target energy, and acoustic preference. This is for classroom exploration and debugging recommender logic, not for production use.
+## Data Used
 
----
+I used a small CSV catalog with 18 songs in [data/songs.csv](data/songs.csv).  
+Main features are `genre`, `mood`, `energy`, `tempo_bpm`, `valence`, `danceability`, and `acousticness`.
 
-## 3. How the Model Works  
+Limits:
+- Small dataset size
+- Some moods are underrepresented (like `sad`)
+- No lyrics, language, or listening-history behavior
 
-Each song has attributes such as genre, mood, energy, and acousticness. A user profile provides preferred genre, preferred mood, desired energy level, and whether acoustic songs are preferred. The model gives fixed points for genre/mood matches and partial points for numeric closeness (energy and acoustic fit). After scoring every song, it ranks all songs from highest to lowest and returns the top 5 with plain-language reasons.
+## Algorithm Summary
 
----
+The model gives points for exact matches and closeness.
 
-## 4. Data  
+- Genre match adds a strong bonus.
+- Mood match adds a medium bonus.
+- Energy adds partial points based on closeness to target.
+- Acousticness adds partial points based on user preference.
 
-The catalog contains 18 songs in [data/songs.csv](data/songs.csv). It includes genres such as pop, lofi, rock, jazz, synthwave, indie pop, r&b, electronic, world, classical, hip hop, metal, house, folk, and ambient, with moods like happy, chill, intense, focused, moody, calm, and nostalgic. I expanded the starter catalog with additional rows to improve diversity. The dataset is still small and does not include lyrics, language, cultural context, or listening-session behavior.
+Then it scores every song, sorts by highest score, and returns top 5 with reasons.
 
----
+## Observed Behavior / Biases
 
-## 5. Strengths  
+The system can over-prioritize genre.  
+In conflicting profiles, songs with the right genre can still rank high even when mood or energy is a weaker fit.
 
-The system works well for clear preference profiles such as “High-Energy Pop,” “Chill Lofi,” and “Deep Intense Rock.” It captures intuitive patterns: high energy profiles receive energetic tracks, and acoustic-friendly profiles move toward more acoustic songs. Because reasons are printed for each recommendation, it is easy to inspect why a result appeared.
+This can create a filter bubble:
+- Similar genres repeat often
+- Discovery is limited
+- Underrepresented moods get weaker results
 
----
+## Evaluation Process
 
-## 6. Limitations and Bias 
+I tested multiple profiles in the CLI:
+- High-Energy Pop
+- Chill Lofi
+- Deep Intense Rock
+- Adversarial conflicting profile
+- Weight-shift experiment (less genre, more energy)
 
-One weakness is that genre matching is a large fixed bonus, which can dominate outcomes and reduce discovery. In the adversarial profile (`genre=lofi`, `mood=sad`, `energy=0.9`), the model still returned multiple lofi songs even though their energy is far from the target, because genre points outweigh contradictory signals. This can create a filter bubble where users keep seeing familiar genre labels instead of better mood/energy fits. Another limitation is sparse mood coverage (for example, “sad” is underrepresented), which pushes the model to rely on whichever signals are available. Finally, the model ignores context features like time of day, recent skips, and novelty, so it may repeat similar songs too often.
+I compared top 5 outputs and checked whether the reasons matched the score math.  
+I also compared outputs across profiles in [reflection.md](reflection.md).
 
----
+## Intended Use and Non-Intended Use
 
-## 7. Evaluation  
+Intended use:
+- Classroom simulation
+- Learning how recommenders convert user preferences into ranked outputs
+- Debugging simple scoring logic
 
-I tested five scenarios in the CLI: High-Energy Pop, Chill Lofi, Deep Intense Rock, an adversarial conflicting profile, and an energy-heavy weight-shift experiment. I looked for whether top songs matched common-sense vibe expectations and whether reasons aligned with score math. The strongest result was profile alignment: “Library Rain”/“Midnight Coding” rose for Chill Lofi, and “Storm Runner” rose for Deep Intense Rock. The biggest surprise was adversarial behavior: lofi songs still ranked high despite poor energy match because genre had a strong fixed weight. In the weight-shift experiment (half genre, double energy), rankings became more energy-driven and more diverse, with non-pop high-energy songs moving upward.
+Non-intended use:
+- Real user recommendations at scale
+- High-stakes or fairness-sensitive decisions
+- Personalized production systems without stronger data and validation
 
----
+## Ideas for Improvement
 
-## 8. Future Work  
+1. Add diversity rules so results are not dominated by one genre or artist.
+2. Add feedback signals (skip/save/like) to mimic collaborative behavior.
+3. Add per-user adaptive weights instead of one fixed weighting style.
 
-I would add diversity constraints so the top 5 cannot be dominated by one genre or artist. I would also include recency and skip-rate style feedback to simulate collaborative signals. Another improvement is dynamic weight tuning per user rather than one global setting. Finally, I would support multi-objective ranking (match quality + novelty + diversity) for less repetitive results.
+## Personal Reflection
 
----
+My biggest learning moment was seeing how one weight change can reorder the full top 5 list.  
+AI tools helped me move faster, especially for drafting code and testing profile ideas, but I had to double-check math and assumptions.
 
-## 9. Personal Reflection  
-
-I learned that even a simple weighted scorer can feel surprisingly realistic when the data fields are meaningful. I also learned how small weight changes can produce noticeably different recommendation lists. This project made me more aware that real apps are not just “smart”; they are strongly shaped by data coverage and design choices, and those choices can accidentally narrow what users discover.
+What surprised me most is that a simple weighted algorithm can still feel “smart” to a user.  
+If I continue this project, I would add diversity-aware ranking and a mixed content + behavior approach.
