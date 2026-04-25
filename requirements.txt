@@ -1,3 +1,6 @@
 pandas
 pytest
 streamlit
+psycopg2-binary
+scikit-learn
+openai
