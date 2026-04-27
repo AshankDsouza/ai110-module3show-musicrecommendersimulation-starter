@@ -1,5 +1,10 @@
 # 🎵 Music Recommender Simulation
 
+## Project choice 
+
+This project is an extention of the 'Music Recommender Simulation'. 
+It has a semantic search for top 3 most similar songs and RAG based description of the song. 
+
 ## How to run the application 
 
 1. Have docker installed, enabled and running
