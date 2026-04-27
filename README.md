@@ -3,9 +3,38 @@
 ## How to run the application 
 
 1. Have docker installed, enabled and running
-2. Run the bash file using [ bash run_app.sh ] or [ chmod +x run_app.sh && ./run_app.sh ]
+2. Change all the python3 commands to python or from python3 to python. The project should run using python3 not other python versions. 
+3. Run the bash file using [ bash run_app.sh ] or [ chmod +x run_app.sh && ./run_app.sh ]
 
 Also, make sure your computer is well provisioned as the docker containers use a couple of GBs of memory and take time to download. 
+
+## System Architecture
+
+### Design and Architecture: How Your System Fits Together
+
+This project is organized as a lightweight recommender pipeline with clear stages:
+
+- **Retriever**: pulls candidate songs from PostgreSQL (`pgvector`) using embedding similarity.
+- **Recommender/Agent**: applies profile-based scoring and ranking logic to produce top recommendations.
+- **LLM Summarizer**: generates one-sentence descriptions for recommended tracks.
+- **Evaluator/Tester**: checks recommendation quality through profile runs and automated tests.
+- **Human-in-the-loop**: reviews outputs, validates relevance, and adjusts feature weights.
+
+> This diagram uses **Mermaid.js** as the source of truth in this README.
+
+
+**Data flow:** input → retrieval and scoring process → ranked recommendations and explanations.  
+**Validation loop:** humans and tests review AI outputs, then feed improvements back into scoring and prompt design.
+
+### Architecture Diagram Export (PNG)
+
+For reproducible documentation assets, build the chart in Mermaid Live Editor and export it as PNG to:
+
+- [assets/system-architecture.png](assets/system-architecture.png)
+
+All architecture images and screenshots should live under [assets/](assets/).
+
+
 
 ## Project Summary
 
@@ -174,17 +203,17 @@ Use this section to document the experiments you ran. For example:
 
 Add your terminal screenshot for `python -m src.main` here:
 
-![CLI recommendation output](docs/cli-output.png)
+![CLI recommendation output](assets/cli-output.png)
 
 ### Phase 4 Evaluation Screenshots
 
 Add one screenshot per profile run:
 
-- High-Energy Pop: ![High-Energy Pop output](docs/profile-high-energy-pop.png)
-- Chill Lofi: ![Chill Lofi output](docs/profile-chill-lofi.png)
-- Deep Intense Rock: ![Deep Intense Rock output](docs/profile-deep-intense-rock.png)
-- Adversarial profile: ![Adversarial output](docs/profile-adversarial.png)
-- Weight-shift experiment: ![Weight-shift output](docs/profile-experiment-energy-heavy.png)
+- High-Energy Pop: ![High-Energy Pop output](assets/high-energy-pop.png)
+- Chill Lofi: ![Chill Lofi output](assets/chilli-lofi.png)
+- Deep Intense Rock: ![Deep Intense Rock output](assets/deep-intense.png)
+- Adversarial profile: ![Adversarial output](assets/adversial.png)
+- Weight-shift experiment: ![Weight-shift output](assets/energy-heavy.png)
 
 ---
 

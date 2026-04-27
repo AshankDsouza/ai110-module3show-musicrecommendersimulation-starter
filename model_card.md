@@ -34,6 +34,8 @@ The model gives points for exact matches and closeness.
 
 Then it scores every song, sorts by highest score, and returns top 5 with reasons.
 
+It also does semantic vector search of top three most similar songs and does RAG summary of the songs. 
+
 ## Observed Behavior / Biases
 
 The system can over-prioritize genre.  
@@ -43,6 +45,8 @@ This can create a filter bubble:
 - Similar genres repeat often
 - Discovery is limited
 - Underrepresented moods get weaker results
+
+Semantic search can sometimes go wrong because the no. of dimentions may not be enough. The correct dimentions may not be included. 
 
 ## Evaluation Process
 
@@ -73,8 +77,14 @@ Non-intended use:
 1. Add diversity rules so results are not dominated by one genre or artist.
 2. Add feedback signals (skip/save/like) to mimic collaborative behavior.
 3. Add per-user adaptive weights instead of one fixed weighting style.
+4. Add more dimensions for a better semantic search 
+5. Have more songs in the dataset for better similar songs recommendations 
 
 ## Personal Reflection
+
+My biggest takeaway from this is that I was able to see how vector searches help group songs together and how that helps semantic searches. 
+
+I was also able to see4 how RAG helps in helping developing a better response. 
 
 My biggest learning moment was seeing how one weight change can reorder the full top 5 list.  
 AI tools helped me move faster, especially for drafting code and testing profile ideas, but I had to double-check math and assumptions.
