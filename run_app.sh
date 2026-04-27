@@ -20,6 +20,8 @@ docker compose exec -T ollama ollama pull "${OLLAMA_MODEL}"
 # Run one-shot loader and wait for it to finish.
 docker compose up --build load-data
 
+
+# possibly you will needs to change python3 to python depending on your system configuration
 # Install local Python dependencies and run the app.
 python3 -m pip install -r requirements.txt
 

@@ -8,7 +8,7 @@ It has a semantic search for top 3 most similar songs and RAG based description 
 ## How to run the application 
 
 1. Have docker installed, enabled and running
-2. Change all the python3 commands to python or from python3 to python. The project should run using python3 not other python versions. 
+2. Change all the python3 commands to whichever python uses python version 3, most likely it would be just python. The project should run using python version 3 not other python versions. 
 3. Run the bash file using [ bash run_app.sh ] or [ chmod +x run_app.sh && ./run_app.sh ]
 
 Also, make sure your computer is well provisioned as the docker containers use a couple of GBs of memory and take time to download. 
@@ -55,8 +55,8 @@ Your goal is to:
 - Design a scoring rule that turns that data into recommendations
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
+- Gets top 3 most semantically similar songs
+- Gets a description of the song
 
 ---
 
