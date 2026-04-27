@@ -8,6 +8,10 @@
 
 Also, make sure your computer is well provisioned as the docker containers use a couple of GBs of memory and take time to download. 
 
+## Video Walkthrough
+
+Loom: https://www.loom.com/share/7163565c0e874ff9858f787e1ff1d6c3
+
 ## System Architecture
 
 ### Design and Architecture: How Your System Fits Together
