@@ -27,6 +27,21 @@ services:
       db:
         condition: service_healthy
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_URL: host=db port=5432 dbname=music_recommender user=postgres password=postgres
+      OPENAI_BASE_URL: http://ollama:11434/v1
+      OPENAI_MODEL: ${OLLAMA_MODEL:-qwen2.5:1.5b}
+      OPENAI_API_KEY: ollama
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+
   ollama:
     image: ollama/ollama:latest
     container_name: music-recommender-ollama
@@ -34,6 +49,11 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
 volumes:
   ollama_data:

@@ -8,8 +8,8 @@ It has a semantic search for top 3 most similar songs and RAG based description 
 ## How to run the application 
 
 1. Have docker installed, enabled and running
-2. Change all the python3 commands to whichever python uses python version 3, most likely it would be just python. The project should run using python version 3 not other python versions. 
-3. Run the bash file using [ bash run_app.sh ] or [ chmod +x run_app.sh && ./run_app.sh ]
+2. Run the bash file using [ bash run_app.sh ] or [ chmod +x run_app.sh && ./run_app.sh ]
+3. The app now runs inside Docker, so the final recommendation output will stream in the same terminal.
 
 Also, make sure your computer is well provisioned as the docker containers use a couple of GBs of memory and take time to download. 
 
@@ -210,7 +210,7 @@ Use this section to document the experiments you ran. For example:
 
 ### CLI Output Screenshot
 
-Add your terminal screenshot for `python -m src.main` here:
+Add your terminal screenshot for `./run_app.sh` here:
 
 ![CLI recommendation output](assets/cli-output.png)
 
