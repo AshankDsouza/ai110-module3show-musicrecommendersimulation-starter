@@ -60,13 +60,50 @@ for row_index, song in songs.iterrows():
             str(song.get("artist", "") or ""),
             "",
             str(song.get("genre", "") or ""),
+            str(song.get("mood", "") or ""),
             float(song.get("energy", 0.0) or 0.0),
+            float(song.get("tempo_bpm", 0.0) or 0.0),
+            float(song.get("valence", 0.0) or 0.0),
+            float(song.get("danceability", 0.0) or 0.0),
+            float(song.get("acousticness", 0.0) or 0.0),
+            0.0,
             embedding,
         )
     )
 
 conn = psycopg2.connect(DB_URL)
 cur = conn.cursor()
+
+# Keep schema in sync with src.main query even when DB volume was created earlier.
+cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+cur.execute(
+    """
+    CREATE TABLE IF NOT EXISTS songs (
+      id           INT PRIMARY KEY,
+      title        TEXT,
+      artist       TEXT,
+      album        TEXT,
+      genre        TEXT,
+      mood         TEXT,
+      energy       FLOAT,
+      tempo_bpm    FLOAT,
+      valence      FLOAT,
+      danceability FLOAT,
+      acousticness FLOAT,
+      duration     FLOAT,
+      embedding    vector(100)
+    );
+    """
+)
+for column, column_type in [
+    ("mood", "TEXT"),
+    ("energy", "FLOAT"),
+    ("tempo_bpm", "FLOAT"),
+    ("valence", "FLOAT"),
+    ("danceability", "FLOAT"),
+    ("acousticness", "FLOAT"),
+]:
+    cur.execute(f"ALTER TABLE songs ADD COLUMN IF NOT EXISTS {column} {column_type};")
 
 cur.execute("TRUNCATE TABLE songs;")
 
@@ -75,12 +112,27 @@ for i in range(0, len(rows), BATCH_SIZE):
     execute_values(
         cur,
         """
-        INSERT INTO songs (id, title, artist, album, genre, duration, embedding)
+        INSERT INTO songs (
+            id, title, artist, album, genre, mood, energy, tempo_bpm,
+            valence, danceability, acousticness, duration, embedding
+        )
         VALUES %s
-        ON CONFLICT (id) DO NOTHING
+        ON CONFLICT (id) DO UPDATE SET
+            title = EXCLUDED.title,
+            artist = EXCLUDED.artist,
+            album = EXCLUDED.album,
+            genre = EXCLUDED.genre,
+            mood = EXCLUDED.mood,
+            energy = EXCLUDED.energy,
+            tempo_bpm = EXCLUDED.tempo_bpm,
+            valence = EXCLUDED.valence,
+            danceability = EXCLUDED.danceability,
+            acousticness = EXCLUDED.acousticness,
+            duration = EXCLUDED.duration,
+            embedding = EXCLUDED.embedding
         """,
         batch,
-        template="(%s, %s, %s, %s, %s, %s, %s::vector)",
+        template="(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s::vector)",
     )
     conn.commit()
 

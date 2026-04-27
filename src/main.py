@@ -60,6 +60,7 @@ def fetch_similar_songs(song_id: int, limit: int = 3) -> list:
 
 
 def _fallback_song_description(song: dict) -> str:
+    print("LLM unavailable, using fallback deterministic description.")
     """Return a deterministic one-sentence song description if LLM is unavailable."""
     return (
         f"\"{song['title']}\" by {song['artist']} is a {song['mood']} {song['genre']} track "
@@ -73,9 +74,10 @@ def describe_song_with_llm(song: dict, reasons: str, similar_songs: list) -> str
     Prompt includes the target song metadata plus top-3 similar song metadata.
     Falls back to deterministic text if API key or package is unavailable.
     """
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        return _fallback_song_description(song)
+    # Default to local Ollama (OpenAI-compatible API) to avoid paid API quota issues.
+    # You can override via environment variables.
+    api_key = os.getenv("OPENAI_API_KEY", "ollama")
+    base_url = os.getenv("OPENAI_BASE_URL", "http://localhost:11434/v1")
 
     try:
         openai = importlib.import_module("openai")
@@ -112,17 +114,16 @@ def describe_song_with_llm(song: dict, reasons: str, similar_songs: list) -> str
         for s in similar_songs
     ]
 
-    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    model = os.getenv("OPENAI_MODEL", "qwen2.5:1.5b")
 
     prompt_payload = {
-        "recommendation_reasons": reasons,
         "song_metadata": song_metadata,
         "top_3_similar_song_metadata": similar_song_metadata,
         "instruction": "Write exactly one sentence that briefly describes this song and its similar tracks genre.",
     }
 
     try:
-        client = openai.OpenAI(api_key=api_key)
+        client = openai.OpenAI(api_key=api_key, base_url=base_url)
         response = client.chat.completions.create(
             model=model,
             temperature=0.5,
@@ -146,7 +147,9 @@ def describe_song_with_llm(song: dict, reasons: str, similar_songs: list) -> str
         if not content:
             return _fallback_song_description(song)
         return content
-    except Exception:
+    except Exception as e:
+        print("LLM description generation failed, falling back to deterministic description.")
+        print(f"Error: {e}" )
         return _fallback_song_description(song)
 
 

@@ -15,3 +15,6 @@ venv/
 
 # Pytest cache
 .pytest_cache/
+
+# Local secrets
+.env.local

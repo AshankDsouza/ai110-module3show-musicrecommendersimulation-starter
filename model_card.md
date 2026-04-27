@@ -2,12 +2,16 @@
 
 ## Model Name
 
-VibeFinder 1.0
+VibeFinder 2.0
 
 ## Goal / Task
 
 The system suggests the top 5 songs for a user profile.  
 It predicts which songs are the best fit based on vibe features.
+
+Additionally, as part of the final project it also:
+i. Fecthes the top 3 most similar songs to the songs being listed through a semantic vector search using postgresql's pgvector extension.
+ii. Uses the some of the above data in i. to do a RAG based description of the song using an LLM running on one of the docker containers
 
 ## Data Used
 

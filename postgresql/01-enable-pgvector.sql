@@ -6,6 +6,12 @@ CREATE TABLE IF NOT EXISTS songs (
 	artist      TEXT,
 	album       TEXT,
 	genre       TEXT,
+	mood        TEXT,
+	energy      FLOAT,
+	tempo_bpm   FLOAT,
+	valence     FLOAT,
+	danceability FLOAT,
+	acousticness FLOAT,
 	duration    FLOAT,
 	embedding   vector(100)
 );

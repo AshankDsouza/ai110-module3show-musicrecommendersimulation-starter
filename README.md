@@ -1,5 +1,12 @@
 # 🎵 Music Recommender Simulation
 
+## How to run the application 
+
+1. Have docker installed, enabled and running
+2. Run the bash file using [ bash run_app.sh ] or [ chmod +x run_app.sh && ./run_app.sh ]
+
+Also, make sure your computer is well provisioned as the docker containers use a couple of GBs of memory and take time to download. 
+
 ## Project Summary
 
 In this project you will build and explain a small music recommender system.
@@ -116,7 +123,28 @@ This system may over-prioritize genre and repeatedly recommend similar tracks, w
 pip install -r requirements.txt
 ```
 
-3. Run the app:
+3. (Optional, recommended) Run a free local LLM with Ollama
+
+```bash
+# Install Ollama (macOS)
+brew install ollama
+
+# Start Ollama service
+ollama serve
+
+# In another terminal, download a small free model
+ollama pull qwen2.5:1.5b
+```
+
+Set environment variables (optional, defaults already point to Ollama):
+
+```bash
+export OPENAI_BASE_URL="http://localhost:11434/v1"
+export OPENAI_MODEL="qwen2.5:1.5b"
+export OPENAI_API_KEY="ollama"
+```
+
+4. Run the app:
 
 ```bash
 python -m src.main
